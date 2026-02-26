@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeFreelance | Детализация, тёмная тема, лайки</title>
+    <!-- Google Fonts + Font Awesome -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* CSS-переменные для светлой и тёмной темы */
+        :root {
+            --bg-gradient-start: #f9fafc;
+            --bg-gradient-end: #f1f5f9;
+            --card-bg: rgba(255,255,255,0.75);
+            --card-border: rgba(255,255,255,0.8);
+            --text-primary: #0f172a;
+            --text-secondary: #334155;
+            --text-muted: #475569;
+            --header-bg: rgba(255,255,255,0.8);
+            --header-border: rgba(226, 232, 240, 0.6);
+            --input-bg: white;
+            --input-border: #e2e8f0;
+            --shadow-color: rgba(0,0,0,0.05);
+            --profession-bg: #dbeafe;
+            --profession-text: #1e40af;
+            --projects-bg: #f0f9ff;
+            --projects-border: #3b82f6;
+            --projects-text: #2563eb;
+            --avatar-gradient: linear-gradient(145deg, #3b82f6, #8b5cf6);
+            --btn-gradient: linear-gradient(145deg, #3b82f6, #2563eb);
+            --btn-shadow: #3b82f670;
+            --modal-bg: white;
+            --modal-overlay: rgba(0,0,0,0.5);
+            --like-color: #ef4444;
+        }
+
+        body.dark-theme {
+            --bg-gradient-start: #1e293b;
+            --bg-gradient-end: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.8);
+            --card-border: rgba(51, 65, 85, 0.8);
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --header-bg: rgba(15, 23, 42, 0.9);
+            --header-border: rgba(51, 65, 85, 0.8);
+            --input-bg: #1e293b;
+            --input-border: #334155;
+            --shadow-color: rgba(0,0,0,0.3);
+            --profession-bg: #1e3a8a;
+            --profession-text: #bfdbfe;
+            --projects-bg: #0c4a6e;
+            --projects-border: #38bdf8;
+            --projects-text: #7dd3fc;
+            --avatar-gradient: linear-gradient(145deg, #2563eb, #7c3aed);
+            --btn-gradient: linear-gradient(145deg, #2563eb, #5b21b6);
+            --btn-shadow: #2563eb70;
+            --modal-bg: #1e293b;
+            --modal-overlay: rgba(0,0,0,0.7);
+            --like-color: #f87171;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.3s, border-color 0.3s, color 0.2s;
+        }
+
+        body {
+            background: linear-gradient(145deg, var(--bg-gradient-start), var(--bg-gradient-end));
+            color: var(--text-primary);
+            line-height: 1.5;
+            min-height: 100vh;
+        }
+
+        .header {
+            background-color: var(--header-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px var(--shadow-color);
+            padding: 0.8rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--header-border);
+        }
+
+        .header-container {
+            max-width: 1300px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.02em;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text-primary);
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+        }
+
+        .theme-toggle:hover {
+            background: var(--input-border);
+        }
+
+        .burger {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 30px;
+            height: 22px;
+            cursor: pointer;
+            z-index: 200;
+            transition: transform 0.2s;
+        }
+
+        .burger span {
+            display: block;
+            width: 100%;
+            height: 3px;
+            background-color: var(--text-primary);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .burger.active span:nth-child(1) {
+            transform: translateY(9px) rotate(45deg);
+            background-color: #ef4444;
+        }
+        .burger.active span:nth-child(2) {
+            opacity: 0;
+        }
+        .burger.active span:nth-child(3) {
+            transform: translateY(-9px) rotate(-45deg);
+            background-color: #ef4444;
+        }
+
+        .menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.3s, visibility 0.3s;
+            z-index: 150;
+        }
+
+        .menu-overlay.active {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .nav-menu {
+            position: fixed;
+            top: 0;
+            right: -320px;
+            width: 300px;
+            height: 100vh;
+            background: var(--modal-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: -10px 0 30px var(--shadow-color);
+            padding: 6rem 2rem 2rem;
+            transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 175;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            border-left: 1px solid var(--header-border);
+        }
+
+        .nav-menu.active {
+            right: 0;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            font-size: 1.3rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            padding: 0.75rem 1rem;
+            border-radius: 12px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            cursor: pointer;
+        }
+
+        .nav-menu a i {
+            width: 28px;
+            color: #3b82f6;
+            font-size: 1.3rem;
+        }
+
+        .nav-menu a:hover {
+            background: var(--input-border);
+            color: #3b82f6;
+            transform: translateX(5px);
+        }
+
+        main {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 3rem 1rem;
+            margin-bottom: 2rem;
+            background: var(--card-bg);
+            backdrop-filter: blur(8px);
+            border-radius: 2rem;
+            border: 1px solid var(--card-border);
+            box-shadow: 0 20px 40px -15px var(--shadow-color);
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(145deg, var(--text-primary), #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 1rem auto 0;
+        }
+
+        .search-container {
+            margin: 2rem 0 1.5rem;
+            display: flex;
+            justify-content: center;
+        }
+
+        .search-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .search-wrapper i {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 1.2rem;
+        }
+
+        #searchInput {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem;
+            border: 1px solid var(--input-border);
+            border-radius: 60px;
+            font-size: 1rem;
+            background: var(--input-bg);
+            color: var(--text-primary);
+            box-shadow: 0 4px 10px var(--shadow-color);
+            transition: 0.2s;
+        }
+
+        #searchInput:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 4px #3b82f640;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.8rem;
+            margin-bottom: 3rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(6px);
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            box-shadow: 0 20px 30px -10px var(--shadow-color);
+            border: 1px solid var(--card-border);
+            transition: transform 0.25s, box-shadow 0.25s;
+            display: flex;
+            flex-direction: column;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card:hover {
+            transform: translateY(-6px);
+            background: var(--input-bg);
+            border-color: #3b82f6;
+            box-shadow: 0 25px 35px -12px #3b82f680;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .avatar {
+            width: 52px;
+            height: 52px;
+            background: var(--avatar-gradient);
+            color: white;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 1.3rem;
+            box-shadow: 0 6px 12px var(--shadow-color);
+        }
+
+        .card-header h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .profession {
+            background: var(--profession-bg);
+            color: var(--profession-text);
+            font-size: 0.85rem;
+            font-weight: 600;
+            padding: 0.3rem 1rem;
+            border-radius: 30px;
+            align-self: flex-start;
+            margin-bottom: 1rem;
+            border: 1px solid transparent;
+        }
+
+        .description {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .projects {
+            margin: 0.5rem 0 1rem;
+            background: var(--projects-bg);
+            border-radius: 1rem;
+            padding: 0.8rem 1rem;
+            border-left: 4px solid var(--projects-border);
+        }
+
+        .projects-title {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--projects-text);
+            margin-bottom: 0.3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .projects-list {
+            list-style: none;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .projects-list li {
+            background: var(--input-bg);
+            padding: 0.2rem 0.8rem;
+            border-radius: 30px;
+            border: 1px solid var(--projects-border);
+            font-size: 0.85rem;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto;
+            border-top: 1px dashed var(--input-border);
+            padding-top: 1rem;
+        }
+
+        .like-btn {
+            background: none;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            font-size: 1rem;
+            color: var(--like-color);
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .like-btn i {
+            font-size: 1.2rem;
+        }
+
+        .like-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .details-btn {
+            background: var(--btn-gradient);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            box-shadow: 0 4px 8px var(--btn-shadow);
+            transition: 0.2s;
+        }
+
+        .details-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .contacts {
+            font-size: 0.9rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+            margin-top: 0.5rem;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            color: var(--text-secondary);
+        }
+
+        .contact-item i {
+            width: 20px;
+            color: #3b82f6;
+        }
+
+        /* Модальное окно */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--modal-overlay);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--modal-bg);
+            border-radius: 2rem;
+            padding: 2.5rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 30px 50px var(--shadow-color);
+            border: 1px solid var(--card-border);
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            font-size: 1.5rem;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+        }
+
+        .modal h2 {
+            margin-bottom: 1rem;
+        }
+
+        .modal-detail-item {
+            margin-bottom: 1rem;
+        }
+
+        .modal-detail-item strong {
+            color: var(--projects-text);
+        }
+
+        .form-section {
+            background: var(--card-bg);
+            backdrop-filter: blur(8px);
+            border-radius: 2rem;
+            padding: 2.5rem;
+            box-shadow: 0 20px 40px -12px var(--shadow-color);
+            border: 1px solid var(--card-border);
+            margin: 2.5rem 0;
+        }
+
+        .form-section h2 {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            color: var(--text-primary);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.4rem;
+            color: var(--text-primary);
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 1rem 1.2rem;
+            border: 1px solid var(--input-border);
+            border-radius: 1.2rem;
+            font-size: 1rem;
+            background: var(--input-bg);
+            color: var(--text-primary);
+            transition: 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 4px #3b82f640;
+        }
+
+        .btn {
+            background: var(--btn-gradient);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 40px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 8px 16px var(--btn-shadow);
+            border: 1px solid #ffffff50;
+        }
+
+        .btn:hover {
+            background: linear-gradient(145deg, #2563eb, #1d4ed8);
+            transform: scale(1.02);
+        }
+
+        .btn-secondary {
+            background: var(--input-border);
+            color: var(--text-primary);
+            box-shadow: none;
+        }
+
+        .btn-secondary:hover {
+            background: var(--text-muted);
+            color: white;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+
+        .contact-section {
+            background: var(--card-bg);
+            backdrop-filter: blur(5px);
+            border-radius: 2rem;
+            padding: 2.5rem;
+            text-align: center;
+            border: 1px solid var(--card-border);
+            margin: 2rem 0;
+        }
+
+        .contact-section h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .contact-links {
+            display: flex;
+            justify-content: center;
+            gap: 2.5rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .contact-link {
+            background: var(--input-bg);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: var(--text-primary);
+            box-shadow: 0 10px 20px var(--shadow-color);
+            transition: 0.2s;
+            border: 1px solid var(--input-border);
+        }
+
+        .contact-link:hover {
+            background: #3b82f6;
+            color: white;
+            transform: translateY(-5px);
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .empty-message {
+            text-align: center;
+            padding: 3rem;
+            background: var(--card-bg);
+            border-radius: 2rem;
+            color: var(--text-muted);
+            border: 2px dashed var(--input-border);
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-container">
+            <div class="logo">code<span style="background:linear-gradient(145deg,#8b5cf6,#ec4899); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">freelance</span></div>
+            <div class="header-controls">
+                <button class="theme-toggle" id="themeToggle" aria-label="Переключить тему">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <div class="burger" id="burger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="menu-overlay" id="menuOverlay"></div>
+    <nav class="nav-menu" id="navMenu">
+        <a data-page="home"><i class="fas fa-home"></i> Главная</a>
+        <a data-page="add"><i class="fas fa-plus-circle"></i> Добавить анкету</a>
+        <hr style="border-color:var(--input-border); margin: 1rem 0;">
+        <div style="color:var(--text-muted); font-size:0.9rem; padding-left:1rem;">50+ программистов</div>
+    </nav>
+
+    <main>
+        <!-- Главная страница -->
+        <section id="home-page" class="page active">
+            <div class="hero">
+                <h1>Программисты на фриланс</h1>
+                <p>Более 50 специалистов с портфолио. Детальные анкеты, лайки, примеры работ.</p>
+            </div>
+
+            <div class="search-container">
+                <div class="search-wrapper">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="Поиск по имени, профессии, технологиям, проектам...">
+                </div>
+            </div>
+
+            <div id="cardsContainer" class="cards-grid"></div>
+        </section>
+
+        <!-- Страница добавления -->
+        <section id="add-page" class="page">
+            <div class="form-section">
+                <h2><i class="fas fa-plus-circle"></i> Добавить анкету программиста</h2>
+                <form id="addFreelancerForm">
+                    <div class="form-group">
+                        <label for="name">Имя и фамилия</label>
+                        <input type="text" id="name" placeholder="Иван Петров" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="profession">Профессия / специализация</label>
+                        <input type="text" id="profession" placeholder="Frontend-разработчик, DevOps и т.д." required>
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Описание навыков и опыта</label>
+                        <textarea id="description" placeholder="Стек технологий, опыт, достижения..." required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="projects">Примеры работ (проекты через запятую)</label>
+                        <input type="text" id="projects" placeholder="Интернет-магазин, CRM, мобильное приложение...">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" placeholder="example@mail.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Телефон (необязательно)</label>
+                        <input type="text" id="phone" placeholder="+7 (999) 123-45-67">
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn"><i class="fas fa-save"></i> Сохранить</button>
+                        <button type="reset" class="btn btn-secondary"><i class="fas fa-undo"></i> Очистить</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- Общая секция контактов -->
+        <section class="contact-section">
+            <h2>Свяжитесь с нами</h2>
+            <p>По вопросам сотрудничества и предложений</p>
+            <div class="contact-links">
+                <a href="#" class="contact-link"><i class="fab fa-telegram-plane"></i></a>
+                <a href="#" class="contact-link"><i class="fab fa-whatsapp"></i></a>
+                <a href="#" class="contact-link"><i class="far fa-envelope"></i></a>
+                <a href="#" class="contact-link"><i class="fab fa-github"></i></a>
+            </div>
+        </section>
+
+        <footer>
+            © 2025 CodeFreelance — детальные анкеты, тёмная тема, лайки
+        </footer>
+    </main>
+
+    <!-- Модальное окно для детального просмотра -->
+    <div id="detailModal" class="modal">
+        <div class="modal-content">
+            <button class="close-modal" id="closeModal"><i class="fas fa-times"></i></button>
+            <div id="modalContent"></div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // ========== ЛОГИКА ТЕМЫ ==========
+            const themeToggle = document.getElementById('themeToggle');
+            const themeIcon = themeToggle.querySelector('i');
+            const body = document.body;
+
+            // Проверяем сохранённую тему
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                body.classList.add('dark-theme');
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+            }
+
+            themeToggle.addEventListener('click', () => {
+                if (body.classList.contains('dark-theme')) {
+                    body.classList.remove('dark-theme');
+                    themeIcon.classList.remove('fa-sun');
+                    themeIcon.classList.add('fa-moon');
+                    localStorage.setItem('theme', 'light');
+                } else {
+                    body.classList.add('dark-theme');
+                    themeIcon.classList.remove('fa-moon');
+                    themeIcon.classList.add('fa-sun');
+                    localStorage.setItem('theme', 'dark');
+                }
+            });
+
+            // ========== БУРГЕР-МЕНЮ ==========
+            const burger = document.getElementById('burger');
+            const overlay = document.getElementById('menuOverlay');
+            const navMenu = document.getElementById('navMenu');
+            const menuLinks = document.querySelectorAll('.nav-menu a[data-page]');
+
+            function closeMenu() {
+                burger.classList.remove('active');
+                overlay.classList.remove('active');
+                navMenu.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+
+            function openMenu() {
+                burger.classList.add('active');
+                overlay.classList.add('active');
+                navMenu.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+
+            burger.addEventListener('click', (e) => {
+                e.stopPropagation();
+                burger.classList.contains('active') ? closeMenu() : openMenu();
+            });
+
+            overlay.addEventListener('click', closeMenu);
+            window.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && navMenu.classList.contains('active')) closeMenu();
+            });
+
+            // Переключение страниц
+            const homePage = document.getElementById('home-page');
+            const addPage = document.getElementById('add-page');
+
+            function showPage(pageId) {
+                homePage.classList.remove('active');
+                addPage.classList.remove('active');
+                if (pageId === 'home') homePage.classList.add('active');
+                else if (pageId === 'add') addPage.classList.add('active');
+                closeMenu();
+            }
+
+            menuLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const page = link.getAttribute('data-page');
+                    showPage(page);
+                });
+            });
+
+            // ========== ГЕНЕРАЦИЯ 50+ АНКЕТ С ЛАЙКАМИ ==========
+            const STORAGE_KEY = 'dev_profiles_detailed';
+
+            function generate50Profiles() {
+                const firstNames = ['Алексей', 'Дмитрий', 'Иван', 'Максим', 'Сергей', 'Андрей', 'Владимир', 'Евгений', 'Павел', 'Артём', 'Николай', 'Михаил', 'Константин', 'Олег', 'Роман', 'Вадим', 'Кирилл', 'Глеб', 'Тимофей', 'Матвей', 'Елена', 'Ольга', 'Анна', 'Мария', 'Наталья', 'Светлана', 'Екатерина', 'Ксения', 'Виктория', 'Полина'];
+                const lastNames = ['Смирнов', 'Иванов', 'Кузнецов', 'Попов', 'Соколов', 'Лебедев', 'Козлов', 'Новиков', 'Морозов', 'Петров', 'Волков', 'Соловьёв', 'Васильев', 'Зайцев', 'Павлов', 'Семёнов', 'Голубев', 'Виноградов', 'Богданов', 'Воробьёв', 'Фёдоров', 'Михайлов', 'Беляев', 'Тарасов', 'Белов', 'Комаров', 'Орлов', 'Киселёв', 'Макаров', 'Андреев'];
+                const professions = ['Frontend-разработчик', 'Backend-разработчик', 'Fullstack-разработчик', 'DevOps-инженер', 'Мобильный разработчик (iOS)', 'Мобильный разработчик (Android)', 'Data Scientist', 'Data Engineer', 'Machine Learning Engineer', 'Тестировщик (QA)', 'Embedded-программист', 'Game Developer', 'Разработчик 1С', 'Системный аналитик', 'Бизнес-аналитик', 'Архитектор ПО', 'Team Lead', 'Python-разработчик', 'Java-разработчик', 'C++ разработчик', 'C# разработчик', 'Go-разработчик', 'Rust-разработчик', 'PHP-разработчик', 'Ruby-разработчик', 'Scala-разработчик', 'Kotlin-разработчик', 'Swift-разработчик', 'Dart (Flutter) разработчик', 'SQL-разработчик'];
+                const techStacks = [
+                    'React, Redux, TypeScript', 'Vue, Pinia, Nuxt', 'Angular, RxJS, NgRx', 'Node.js, Express, MongoDB', 'Django, DRF, PostgreSQL', 'Flask, SQLAlchemy', 'Spring Boot, Hibernate', 'ASP.NET Core, Entity Framework', 'Laravel, Livewire', 'Ruby on Rails, RSpec',
+                    'Docker, Kubernetes, CI/CD', 'AWS, Terraform, Ansible', 'Hadoop, Spark, Kafka', 'TensorFlow, PyTorch', 'Unity, C#', 'Unreal Engine, C++', '1С:Предприятие 8', 'Kotlin, Coroutines, Room', 'SwiftUI, Combine', 'Flutter, BLoC',
+                    'PyTorch, Transformers', 'Pandas, NumPy, Scikit-learn', 'Airflow, dbt, Redshift', 'Kafka, Flink, Cassandra', 'PostgreSQL, MySQL, ClickHouse'
+                ];
+                const projectExamples = [
+                    'Интернет-магазин электроники', 'CRM для банка', 'Мобильное приложение для доставки', 'Панель аналитики для ритейла', 'Телеграм-бот для бронирования', 'Платформа онлайн-курсов', 'Система управления складом', 'Портал недвижимости', 'Сайт-визитка для адвоката', 'Медицинская информационная система',
+                    'Чат-бот для поддержки', 'Игра-головоломка', 'Парсер данных с маркетплейсов', 'Дашборд для мониторинга серверов', 'API для мобильного банка', 'Система рекомендаций фильмов', 'Генератор отчётов в Excel', 'Приложение для заметок', 'Блог-платформа', 'Сервис сокращения ссылок',
+                    'Агрегатор вакансий', 'Система учёта рабочего времени', 'Файловое хранилище', 'Платежный шлюз', 'Сервис онлайн-оплаты'
+                ];
+
+                const profiles = [];
+                for (let i = 0; i < 50; i++) {
+                    const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
+                    const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
+                    const name = `${firstName} ${lastName}`;
+                    const profession = professions[Math.floor(Math.random() * professions.length)];
+                    const tech = techStacks[Math.floor(Math.random() * techStacks.length)];
+                    const projectCount = Math.floor(Math.random() * 3) + 1; // 1-3 проекта
+                    const projects = [];
+                    for (let j = 0; j < projectCount; j++) {
+                        projects.push(projectExamples[Math.floor(Math.random() * projectExamples.length)]);
+                    }
+                    // Убираем дубликаты
+                    const uniqueProjects = [...new Set(projects)];
+                    const description = `Стек: ${tech}. Опыт ${Math.floor(Math.random() * 5) + 1} года. Участвовал в коммерческих проектах.`;
+                    const email = `${firstName.toLowerCase()}.${lastName.toLowerCase()}@example.com`;
+                    const phone = `+7 (90${Math.floor(Math.random() * 9)}) ${Math.floor(Math.random() * 900) + 100}-${Math.floor(Math.random() * 90) + 10}-${Math.floor(Math.random() * 90) + 10}`;
+                    const likes = Math.floor(Math.random() * 50); // случайное число лайков
+
+                    profiles.push({
+                        id: `gen-${i}-${Date.now()}`,
+                        name,
+                        profession,
+                        description,
+                        projects: uniqueProjects,
+                        email,
+                        phone,
+                        likes
+                    });
+                }
+                return profiles;
+            }
+
+            function loadProfiles() {
+                const stored = localStorage.getItem(STORAGE_KEY);
+                if (stored) {
+                    try {
+                        return JSON.parse(stored);
+                    } catch { return generate50Profiles(); }
+                } else {
+                    const generated = generate50Profiles();
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(generated));
+                    return generated;
+                }
+            }
+
+            function saveProfiles(profiles) {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(profiles));
+            }
+
+            function generateId() {
+                return Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+            }
+
+            function escapeHtml(text) {
+                if (!text) return '';
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+
+            // Отрисовка карточек с учётом поиска
+            function renderCards(profiles, searchQuery = '') {
+                const container = document.getElementById('cardsContainer');
+                if (!container) return;
+
+                let filtered = profiles;
+                if (searchQuery.trim() !== '') {
+                    const query = searchQuery.toLowerCase().trim();
+                    filtered = profiles.filter(p => 
+                        p.name.toLowerCase().includes(query) ||
+                        p.profession.toLowerCase().includes(query) ||
+                        p.description.toLowerCase().includes(query) ||
+                        (p.projects && p.projects.some(proj => proj.toLowerCase().includes(query)))
+                    );
+                }
+
+                if (filtered.length === 0) {
+                    container.innerHTML = '<div class="empty-message">Ничего не найдено. Попробуйте изменить запрос.</div>';
+                    return;
+                }
+
+                let html = '';
+                filtered.forEach(profile => {
+                    const initials = profile.name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
+                    const projectsList = profile.projects && profile.projects.length > 0 
+                        ? profile.projects.map(p => `<li>${escapeHtml(p)}</li>`).join('')
+                        : '<li>Нет примеров</li>';
+
+                    html += `
+                        <div class="card" data-id="${escapeHtml(profile.id)}">
+                            <div class="card-header">
+                                <div class="avatar">${escapeHtml(initials)}</div>
+                                <h3>${escapeHtml(profile.name)}</h3>
+                            </div>
+                            <span class="profession">${escapeHtml(profile.profession)}</span>
+                            <p class="description">${escapeHtml(profile.description)}</p>
+                            <div class="projects">
+                                <div class="projects-title"><i class="fas fa-code-branch"></i> Примеры работ:</div>
+                                <ul class="projects-list">
+                                    ${projectsList}
+                                </ul>
+                            </div>
+                            <div class="card-footer">
+                                <button class="like-btn" data-id="${escapeHtml(profile.id)}">
+                                    <i class="fas fa-heart"></i> <span>${profile.likes || 0}</span>
+                                </button>
+                                <button class="details-btn" data-id="${escapeHtml(profile.id)}">Подробнее</button>
+                            </div>
+                        </div>
+                    `;
+                });
+                container.innerHTML = html;
+
+                // Привязываем события к кнопкам лайков и деталей
+                document.querySelectorAll('.like-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const id = btn.getAttribute('data-id');
+                        const profile = profiles.find(p => p.id === id);
+                        if (profile) {
+                            profile.likes = (profile.likes || 0) + 1;
+                            saveProfiles(profiles);
+                            btn.querySelector('span').textContent = profile.likes;
+                        }
+                    });
+                });
+
+                document.querySelectorAll('.details-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const id = btn.getAttribute('data-id');
+                        const profile = profiles.find(p => p.id === id);
+                        if (profile) {
+                            showModal(profile);
+                        }
+                    });
+                });
+            }
+
+            // Модальное окно с деталями
+            const modal = document.getElementById('detailModal');
+            const modalContent = document.getElementById('modalContent');
+            const closeModal = document.getElementById('closeModal');
+
+            function showModal(profile) {
+                const projectsHtml = profile.projects && profile.projects.length > 0 
+                    ? profile.projects.map(p => `<li>${escapeHtml(p)}</li>`).join('')
+                    : '<li>Нет примеров</li>';
+
+                modalContent.innerHTML = `
+                    <h2>${escapeHtml(profile.name)}</h2>
+                    <div class="modal-detail-item"><strong>Профессия:</strong> ${escapeHtml(profile.profession)}</div>
+                    <div class="modal-detail-item"><strong>Описание:</strong> ${escapeHtml(profile.description)}</div>
+                    <div class="modal-detail-item"><strong>Проекты:</strong></div>
+                    <ul class="projects-list" style="margin-bottom: 1rem;">${projectsHtml}</ul>
+                    <div class="modal-detail-item"><strong>Email:</strong> ${escapeHtml(profile.email)}</div>
+                    ${profile.phone ? `<div class="modal-detail-item"><strong>Телефон:</strong> ${escapeHtml(profile.phone)}</div>` : ''}
+                    <div class="modal-detail-item"><strong>Лайков:</strong> ${profile.likes || 0}</div>
+                `;
+                modal.classList.add('active');
+            }
+
+            closeModal.addEventListener('click', () => {
+                modal.classList.remove('active');
+            });
+
+            window.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.remove('active');
+                }
+            });
+
+            // Инициализация
+            let profiles = loadProfiles();
+            renderCards(profiles);
+
+            // Поиск
+            const searchInput = document.getElementById('searchInput');
+            searchInput.addEventListener('input', (e) => {
+                renderCards(profiles, e.target.value);
+            });
+
+            // Форма добавления анкеты
+            const form = document.getElementById('addFreelancerForm');
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                const name = document.getElementById('name').value.trim();
+                const profession = document.getElementById('profession').value.trim();
+                const description = document.getElementById('description').value.trim();
+                const projectsRaw = document.getElementById('projects').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const phone = document.getElementById('phone').value.trim();
+
+                if (!name || !profession || !description || !email) {
+                    alert('Заполните все обязательные поля');
+                    return;
+                }
+
+                const projects = projectsRaw ? projectsRaw.split(',').map(s => s.trim()).filter(s => s.length > 0) : [];
+
+                const newProfile = {
+                    id: generateId(),
+                    name,
+                    profession,
+                    description,
+                    projects,
+                    email,
+                    phone: phone || '',
+                    likes: 0
+                };
+
+                profiles.push(newProfile);
+                saveProfiles(profiles);
+                renderCards(profiles, searchInput.value);
+
+                form.reset();
+                alert('Анкета успешно добавлена!');
+                showPage('home');
+            });
+        })();
+    </script>
+</body>
+</html>
